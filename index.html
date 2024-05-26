@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>非法字符转义</title>
+</head>
+<body style="display: flex;flex-direction: column;align-items: center;justify-content: center;">
+<h2>非法字符转义</h2>
+<div>将docusaurus里非法字符粘贴到下面的输入框里点击转换，会自动复制转义后的代码到剪贴板，替换原内容即可</div>
+<textarea style="margin-top: 3rem;width: 80%;" id="inputTextArea" rows="10" cols="50" placeholder="在这里粘贴内容"></textarea><br>
+<button id="convertButton">转换</button>
+
+<script>
+    document.getElementById('convertButton').addEventListener('click', function() {
+        const inputText = document.getElementById('inputTextArea').value;
+        const convertedText = escapeHtmlEntities(inputText);
+        copyToClipboard(convertedText);
+    });
+
+    function escapeHtmlEntities(str) {
+        const replacements = {
+            '"': '&quot;',
+            ':': '&#58;',
+            ',': '&#44;',
+            '{': '&#123;',
+            '}': '&#125;',
+            '[': '&#91;',
+            ']': '&#93;'
+        };
+
+        return str.replace(/[":,{}[\]]/g, function (match) {
+            return replacements[match];
+        });
+    }
+
+    async function copyToClipboard(text) {
+        const textarea = document.getElementById('inputTextArea');
+        textarea.value = text;
+        try {
+            await navigator.clipboard.writeText(text);
+            alert('已复制到剪贴板');
+        } catch (err) {
+            textarea.select();
+            console.error('复制到剪贴板时出错，请手动复制！', err);
+        }
+    }
+</script>
+</body>
+</html>
